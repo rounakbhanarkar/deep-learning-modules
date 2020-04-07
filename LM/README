@@ -1,0 +1,54 @@
+---------------------------------------
+#Steps to install Language Model(lm)
+---------------------------------------
+1)The Language Model used is the integrated part of the Moses Statistical Machine Translation Tool. So before we construct the Language 	  Model,Moses has to be installed.The Language Model integrated is KenLM,which is an N-gram Language Model.
+
+2)To install the Moses,refer the link below : 
+https://github.com/moses-smt/mosesdecoder.git
+
+3)All the pre-requisites and steps to install the moses correctly are mentioned in the manual given below in the link:
+http://www.statmt.org/moses/manual/manual.pdf
+----------------------------------------
+#Language Model Training
+----------------------------------------
+Language Model is used to ensure a fluent output and it is always build for the Target(Monolingual)Language i.e.,if you are training the Moses for English-Hindi then your Target language is Hindi.
+1) There are some steps to be followed regarding corpus preparation(The corpus should be one sentence per line)i.e., there is some preprocessing to be done to the corpus before we could build our Language Model.They are :
+a)Tokenizing :This means that spaces have to be inserted between (e.g.) words and punctuation.
+
+b)Truecasing :The initial words in each sentence are converted to their most probable casing.This helps reduce data sparsity.
+
+c)Cleaning   :Long sentences and empty sentences are removed as they can cause problems with the training pipeline, and obviously mis-aligned sentences are removed.
+
+#Commands to perform all the above 3 steps are mentioned in the manual(http://www.statmt.org/moses/manual/manual.pdf)
+#However it is meaningless to perform all the above 3 steps for Hindi,since there is no concept of truecasing in this language.
+
+2)Rename your corpus(If Hindi) as <filename>.true.hi otherwise if your target language is different and it follows the concept of truecasing then you need to perform the 3 steps of corpus preparation which will yield you with the .true file.
+
+3)First step in building Language Model is creating a directory named "lm" as follows:
+mkdir ~/lm
+cd ~/lm 
+
+4)Then you create an .arpa file or the n-gram file as follows:
+~/mosesdecoder/bin/lmplz -o 3 <~/corpus/<filename>.true.hi > <filename>.arpa.hi
+#In KenLM you can change the above number i.e., 3 to 6 (3,4,5 or 6).This gives a improved output in the perplexity score.Perplexity score is the output of the Language Model,lower is the score better it is able to predict and understand the Target Language.
+
+5)The next step is to binarise the .arpa file so that it gives faster processing:
+~/mosesdecoder/bin/build_binary <filename>.true.hi <filename>.blm.hi
+
+#The .blm file is your Language Model specific to your Target Language.
+
+-------------------------------------------
+#Testing the Language Model
+-------------------------------------------
+To test the LM we use following commands:
+i)For input as a single sentence :
+echo "<any hindi sentence>" | ~/mosesdecoder/bin/query <filename>.blm.hi
+
+ii)For input as a sample file    :
+cat <hindi test file> | ~/mosesdecoder/bin/query <filename>.blm.hi 
+
+#The output can be viewed on the terminal or can be directed to an output file.
+(echo "<any hindi sentence>" | ~/mosesdecoder/bin/query <filename>.blm.hi > output.txt)
+
+#You can train your Language Model over any size of the target language,depending on your laptop's processor power and the memory space.More corpus size would lead to better results in perplexity scores.
+(We could train a Hindi Monolingual corpus with 3crore lines over the lm.)
