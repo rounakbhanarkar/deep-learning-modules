@@ -52,3 +52,7 @@ cat <hindi test file> | ~/mosesdecoder/bin/query <filename>.blm.hi
 
 #You can train your Language Model over any size of the target language,depending on your laptop's processor power and the memory space.More corpus size would lead to better results in perplexity scores.
 (We could train a Hindi Monolingual corpus with 3crore lines over the lm.)
+
+#for processing multiples sentences at a time
+1)copy <H1> <H2> .....<H9> hindi files to LM folder
+2)run sh LM.sh
